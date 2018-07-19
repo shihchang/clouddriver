@@ -17,7 +17,7 @@ final File sdkLocation = project.file('build/bmcs-sdk')
 
 // Oracle BMCS SDK isn't published to any maven repo (yet!), so we manually download, unpack and add to compile/runtime deps
 task fetchSdk(type: DownloadTask) {
-  sourceUrl = 'https://github.com/oracle/bmcs-java-sdk/releases/download/v1.2.7/oracle-bmcs-java-sdk.zip'
+  sourceUrl = 'https://github.com/oracle/oci-java-sdk/releases/download/v1.2.42/oci-java-sdk.zip'
   target = sdkDownloadLocation
 }
 
@@ -33,12 +33,12 @@ task unpackSdk(type: Sync) {
 
   // Scary but works. I think clouddriver deps in general need cleaning at some point
   // Even without the oracle bmc sdk 3rd party deps there's still multiple javax.inject and commons-X JARs
-  exclude "**/*jackson*.jar"
-  exclude "**/*jersey*.jar"
+  //exclude "**/*jackson*.jar"
+  //exclude "**/*jersey*.jar"
   exclude "**/hk2*.jar"
   exclude "**/*guava*.jar"
   exclude "**/commons*.jar"
-  exclude "**/javax*.jar"
+  //exclude "**/javax*.jar"
   exclude "**/aopalliance*.jar"
   exclude "**/javassist*.jar"
   exclude "**/slf*.jar"

@@ -81,29 +81,32 @@ class OracleServerGroup {
 
     @Override
     ServerGroup.ImagesSummary getImagesSummary() {
-      def bi = OracleServerGroup.this.buildInfo
       return new ServerGroup.ImagesSummary() {
 
         @Override
         List<ServerGroup.ImageSummary> getSummaries() {
-          return [new ServerGroup.ImageSummary() {
-
-            String serverGroupName = name
-            String imageName = launchConfig?.instanceTemplate?.name
-            String imageId = launchConfig?.imageId
-
-            @Override
-            Map<String, Object> getBuildInfo() {
-              return bi
-            }
-
-            @Override
-            Map<String, Object> getImage() {
-              return launchConfig?.instanceTemplate
-            }
-          }]
+          return listSummaries()
         }
       }
+    }
+
+    List<ServerGroup.ImageSummary> listSummaries() {
+      def bi = OracleServerGroup.this.buildInfo
+      return [new ServerGroup.ImageSummary() {
+        String serverGroupName = name
+        String imageName = launchConfig?.instanceTemplate?.name
+        String imageId = launchConfig?.imageId
+
+        @Override
+        Map<String, Object> getBuildInfo() {
+          return bi
+        }
+
+        @Override
+        Map<String, Object> getImage() {
+          return launchConfig?.instanceTemplate
+        }
+      }]
     }
 
     @Override
@@ -115,17 +118,16 @@ class OracleServerGroup {
     ServerGroup.InstanceCounts getInstanceCounts() {
       new ServerGroup.InstanceCounts(
         total: instances.size(),
-        up: filterInstancesByHealthState(instances, HealthState.Up)?.size() ?: 0,
-        down: filterInstancesByHealthState(instances, HealthState.Down)?.size() ?: 0,
-        unknown: filterInstancesByHealthState(instances, HealthState.Unknown)?.size() ?: 0,
-        starting: filterInstancesByHealthState(instances, HealthState.Starting)?.size() ?: 0,
-        outOfService: filterInstancesByHealthState(instances, HealthState.OutOfService)?.size() ?: 0
+        up: sizeOf(instances, HealthState.Up),
+        down: sizeOf(instances, HealthState.Down),
+        unknown: sizeOf(instances, HealthState.Unknown),
+        starting: sizeOf(instances, HealthState.Starting),
+        outOfService: sizeOf(instances, HealthState.OutOfService)
       )
     }
 
-    static Collection<Instance> filterInstancesByHealthState(Set<Instance> instances, HealthState healthState) {
-      instances.findAll { Instance it -> it.getHealthState() == healthState }
+    int sizeOf(Set<Instance> instances, HealthState healthState) {
+      instances.findAll { Instance it -> it.getHealthState() == healthState }?.size() ?: 0
     }
   }
-
 }

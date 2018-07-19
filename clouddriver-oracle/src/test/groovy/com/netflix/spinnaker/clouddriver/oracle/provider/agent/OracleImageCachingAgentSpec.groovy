@@ -58,6 +58,10 @@ class OracleImageCachingAgentSpec extends Specification {
     cacheResult != null
     cacheResult.cacheResults.containsKey(IMAGES.ns)
   }
+  
+  Image newImage(String name, String id, Image.LifecycleState lifecycleState) {
+    return Image.builder().displayName(name).id(id).lifecycleState(lifecycleState).build()
+  }
 
   def "agent creates correct cache result item, filtering out unavailable images and adding shapes"() {
     setup:
@@ -65,11 +69,11 @@ class OracleImageCachingAgentSpec extends Specification {
     creds.name = "foo"
     creds.region = Region.US_PHOENIX_1.regionId
     def computeClient = Mock(ComputeClient)
-    def image = new Image(null, null, null, "My Image", "ocid.image.123", Image.LifecycleState.Available, null, null, null)
+    def image = newImage("My Image", "ocid.image.123", Image.LifecycleState.Available)
     def images = [
       image,
-      new Image(null, null, null, "My New Image", "ocid.image.234", Image.LifecycleState.Provisioning, null, null, null),
-      new Image(null, null, null, "My Disabled Image", "ocid.image.345", Image.LifecycleState.Disabled, null, null, null)
+      newImage("My New Image", "ocid.image.234", Image.LifecycleState.Provisioning),
+      newImage("My Disabled Image", "ocid.image.345", Image.LifecycleState.Disabled)
     ]
     def shapes = [Shape.builder().shape("small").build()]
 

@@ -10,6 +10,7 @@ package com.netflix.spinnaker.clouddriver.oracle.provider.view
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider
 import com.netflix.spinnaker.cats.cache.DefaultCacheData
 import com.netflix.spinnaker.cats.mem.InMemoryCache
 import com.netflix.spinnaker.clouddriver.oracle.OracleCloudProvider
@@ -173,7 +174,8 @@ class OracleSecurityGroupProviderSpec extends Specification {
         ).build()
       ).build()]
     )
-    Map<String, Object> attributes = new ObjectMapper().convertValue(sl, new TypeReference<Map<String, Object>>() {})
+    SimpleFilterProvider filters = new SimpleFilterProvider().setFailOnUnknownId(false);
+    Map<String, Object> attributes = new ObjectMapper().setFilterProvider(filters).convertValue(sl, new TypeReference<Map<String, Object>>() {})
 
     return new DefaultCacheData(
       Keys.getSecurityGroupKey(name, ocid, region, account),

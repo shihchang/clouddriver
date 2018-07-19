@@ -58,6 +58,14 @@ class OracleInstanceCachingAgentSpec extends Specification {
     cacheResult.cacheResults.containsKey(INSTANCES.ns)
   }
 
+  Instance newInstance(
+    String availabilityDomain, String displayName, String id, String imageId, 
+    Instance.LifecycleState lifecycleState, String region, String shape) {
+    return Instance.builder().availabilityDomain(availabilityDomain)
+      .displayName(displayName).id(id).imageId(imageId)
+      .lifecycleState(lifecycleState).region(region).shape(shape).build()
+  }
+  
   def "agent creates correct cache result items"() {
     setup:
     def creds = Mock(OracleNamedAccountCredentials)
@@ -66,9 +74,9 @@ class OracleInstanceCachingAgentSpec extends Specification {
     def computeClient = Mock(ComputeClient)
 
     def instances = [
-      new Instance("AD1", null, "Instance 1", "ocid.instance.1", "ocid.image.1", null, Instance.LifecycleState.Running, null, creds.region, "small", null),
-      new Instance("AD1", null, "Instance 2", "ocid.instance.2", "ocid.image.1", null, Instance.LifecycleState.Starting, null, creds.region, "small", null),
-      new Instance("AD1", null, "Instance 3", "ocid.instance.3", "ocid.image.1", null, Instance.LifecycleState.Terminated, null, creds.region, "small", null),
+      newInstance("AD1", "Instance 1", "ocid.instance.1", "ocid.image.1", Instance.LifecycleState.Running, creds.region, "small"),
+      newInstance("AD1", "Instance 2", "ocid.instance.2", "ocid.image.1", Instance.LifecycleState.Starting, creds.region, "small"),
+      newInstance("AD1", "Instance 3", "ocid.instance.3", "ocid.image.1", Instance.LifecycleState.Terminated, creds.region, "small"),
     ]
 
     computeClient.listInstances(_) >> ListInstancesResponse.builder().items(instances).build()

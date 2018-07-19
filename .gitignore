@@ -6,7 +6,11 @@ build/
 *.ipr
 *.iws
 TestScript.groovy
-.idea/
+.idea/	
+.classpath
+.project
+.settings/
+bin/
 application.yml
 *.hprof
 README.html
