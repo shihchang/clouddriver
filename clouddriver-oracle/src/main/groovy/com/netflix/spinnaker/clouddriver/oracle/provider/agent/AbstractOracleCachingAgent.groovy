@@ -20,7 +20,7 @@ import com.oracle.bmc.http.internal.ExplicitlySetFilter
 abstract class AbstractOracleCachingAgent implements CachingAgent {
 
   final TypeReference<Map<String, Object>> ATTRIBUTES = new TypeReference<Map<String, Object>>() {}
-  final String clouddriverUserAgentApplicationName // "Spinnaker/${version}" HTTP header string
+  final String clouddriverUserAgentApplicationName // "Spinnaker/${version}" HTTP header string see CloudDriverConfig
   final OracleNamedAccountCredentials credentials
   final ObjectMapper objectMapper
   final String providerName = OracleCloudProvider.ID

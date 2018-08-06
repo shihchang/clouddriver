@@ -8,10 +8,11 @@
  */
 package com.netflix.spinnaker.clouddriver.oracle.model
 
+import java.io.Serializable
 import com.netflix.spinnaker.clouddriver.model.HealthState
 import com.netflix.spinnaker.clouddriver.model.Instance
 
-class OracleInstance implements Instance {
+class OracleInstance implements Instance, Serializable {
   String name
   HealthState healthState
   Long launchTime

@@ -25,7 +25,7 @@ class OracleCredentialsInitializer implements CredentialsInitializerSynchronizab
 
   @Bean
   List<? extends OracleNamedAccountCredentials> oracleNamedAccountCredentials(
-    String clouddriverUserAgentApplicationName,
+    String clouddriverUserAgentApplicationName, //see CloudDriverConfig.clouddriverUserAgentApplicationName
     OracleConfigurationProperties oracleConfigurationProperties,
     AccountCredentialsRepository accountCredentialsRepository
   ) {
