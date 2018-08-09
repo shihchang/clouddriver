@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Oracle America, Inc.
+ * Copyright (c) 2017, 2018, Oracle Corporation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the Apache License Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,8 @@ class ResizeOracleServerGroupAtomicOperation implements AtomicOperation<Void> {
   @Override
   Void operate(List priorOutputs) {
     task.updateStatus BASE_PHASE, "Resizing server group: " + description.serverGroupName
-    oracleServerGroupService.resizeServerGroup(task, description.credentials, description.serverGroupName, description.capacity.desired)
+    int targetSize = description.targetSize?: (description.capacity?.desired?:0)
+    oracleServerGroupService.resizeServerGroup(task, description.credentials, description.serverGroupName, targetSize)
 
     // SL: sync server group instances to backendset if there is one
     def app = Names.parseName(description.serverGroupName).app

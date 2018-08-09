@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Oracle America, Inc.
+ * Copyright (c) 2017, 2018, Oracle Corporation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the Apache License Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,5 +26,42 @@ class StandardOracleAttributeValidator {
       return false
     }
     return true
+  }
+
+  def validateNonNegative(int value, String attribute) {
+    def result
+    if (value >= 0) {
+      result = true
+    } else {
+      errors.rejectValue("${context}.${attribute}", "${context}.${attribute}.negative")
+      result = false
+    }
+    result
+  }
+
+  def validatePositive(int value, String attribute) {
+    def result
+    if (value > 0) {
+      result = true
+    } else {
+      errors.rejectValue("${context}.${attribute}", "${context}.${attribute}.notPositive")
+      result = false
+    }
+    result
+  }
+  
+  def validateCapacity(Integer min, Integer max, Integer desired) {
+    if (min != null && max != null && min > max) {
+      errors.rejectValue "capacity", "${context}.capacity.transposed",
+        [min, max] as String[],
+        "min size (${min}) > max size (${max})"
+    }
+    if (desired != null) {
+      if ((min != null && desired < min) || (max != null && desired > max)) {
+        errors.rejectValue "capacity", "${context}.desired.capacity.not.in.range",
+          [min, max, desired] as String[],
+          "desired capacity (${desired}) is not within min/max (${min}/${max}) range"
+      }
+    }
   }
 }
