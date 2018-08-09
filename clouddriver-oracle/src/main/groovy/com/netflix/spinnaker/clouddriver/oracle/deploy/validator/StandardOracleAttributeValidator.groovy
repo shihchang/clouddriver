@@ -9,18 +9,14 @@
 package com.netflix.spinnaker.clouddriver.oracle.deploy.validator
 
 import org.springframework.validation.Errors
+import com.netflix.spinnaker.clouddriver.deploy.DescriptionValidator
+import com.netflix.spinnaker.clouddriver.orchestration.VersionedCloudProviderOperation
 
-class StandardOracleAttributeValidator {
+abstract class StandardOracleAttributeValidator<T> extends DescriptionValidator<T> {
 
   String context
-  Errors errors
 
-  StandardOracleAttributeValidator(String context, Errors errors) {
-    this.context = context
-    this.errors = errors
-  }
-
-  def validateNotEmptyString(String value, String attribute) {
+  def validateNotEmptyString(Errors errors, String value, String attribute) {
     if (!value) {
       errors.rejectValue(attribute, "${context}.${attribute}.empty")
       return false
@@ -28,7 +24,7 @@ class StandardOracleAttributeValidator {
     return true
   }
 
-  def validateNonNegative(int value, String attribute) {
+  def validateNonNegative(Errors errors, int value, String attribute) {
     def result
     if (value >= 0) {
       result = true
@@ -39,7 +35,7 @@ class StandardOracleAttributeValidator {
     result
   }
 
-  def validatePositive(int value, String attribute) {
+  def validatePositive(Errors errors, int value, String attribute) {
     def result
     if (value > 0) {
       result = true
@@ -50,7 +46,7 @@ class StandardOracleAttributeValidator {
     result
   }
   
-  def validateCapacity(Integer min, Integer max, Integer desired) {
+  def validateCapacity(Errors errors, Integer min, Integer max, Integer desired) {
     if (min != null && max != null && min > max) {
       errors.rejectValue "capacity", "${context}.capacity.transposed",
         [min, max] as String[],

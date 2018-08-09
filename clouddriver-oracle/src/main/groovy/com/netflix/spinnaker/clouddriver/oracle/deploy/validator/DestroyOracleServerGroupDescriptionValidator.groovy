@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Oracle America, Inc.
+ * Copyright (c) 2017, 2018, Oracle Corporation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the Apache License Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -8,7 +8,6 @@
  */
 package com.netflix.spinnaker.clouddriver.oracle.deploy.validator
 
-import com.netflix.spinnaker.clouddriver.deploy.DescriptionValidator
 import com.netflix.spinnaker.clouddriver.oracle.OracleOperation
 import com.netflix.spinnaker.clouddriver.oracle.deploy.description.DestroyOracleServerGroupDescription
 import com.netflix.spinnaker.clouddriver.orchestration.AtomicOperations
@@ -17,15 +16,13 @@ import org.springframework.validation.Errors
 
 @OracleOperation(AtomicOperations.DESTROY_SERVER_GROUP)
 @Component("destroyOracleServerGroupDescriptionValidator")
-class DestroyOracleServerGroupDescriptionValidator extends DescriptionValidator<DestroyOracleServerGroupDescription> {
+class DestroyOracleServerGroupDescriptionValidator extends StandardOracleAttributeValidator<DestroyOracleServerGroupDescription> {
 
   @Override
   void validate(List priorDescriptions, DestroyOracleServerGroupDescription description, Errors errors) {
-
-    def helper = new StandardOracleAttributeValidator("destroyServerGroupDescription", errors)
-
-    helper.validateNotEmptyString(description.accountName, "accountName")
-    helper.validateNotEmptyString(description.region, "region")
-    helper.validateNotEmptyString(description.serverGroupName, "serverGroupName")
+    context = "destroyServerGroupDescription"
+    validateNotEmptyString(errors, description.accountName, "accountName")
+    validateNotEmptyString(errors, description.region, "region")
+    validateNotEmptyString(errors, description.serverGroupName, "serverGroupName")
   }
 }

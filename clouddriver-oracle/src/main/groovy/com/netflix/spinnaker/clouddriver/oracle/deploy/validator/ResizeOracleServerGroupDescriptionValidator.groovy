@@ -8,7 +8,6 @@
  */
 package com.netflix.spinnaker.clouddriver.oracle.deploy.validator
 
-import com.netflix.spinnaker.clouddriver.deploy.DescriptionValidator
 import com.netflix.spinnaker.clouddriver.oracle.OracleOperation
 import com.netflix.spinnaker.clouddriver.oracle.deploy.description.ResizeOracleServerGroupDescription
 import com.netflix.spinnaker.clouddriver.orchestration.AtomicOperations
@@ -17,20 +16,19 @@ import org.springframework.validation.Errors
 
 @OracleOperation(AtomicOperations.RESIZE_SERVER_GROUP)
 @Component("resizeOracleServerGroupDescriptionValidator")
-class ResizeOracleServerGroupDescriptionValidator extends DescriptionValidator<ResizeOracleServerGroupDescription> {
+class ResizeOracleServerGroupDescriptionValidator extends StandardOracleAttributeValidator<ResizeOracleServerGroupDescription> {
 
   @Override
   void validate(List priorDescriptions, ResizeOracleServerGroupDescription description, Errors errors) {
-    def helper = new StandardOracleAttributeValidator("resizeServerGroupDescription", errors)
-
-    helper.validateNotEmptyString(description.serverGroupName, "serverGroupName")
-    helper.validateNotEmptyString(description.region, "region")
-    helper.validateNotEmptyString(description.accountName, "accountName")
+    context = "resizeServerGroupDescription"
+    validateNotEmptyString(errors, description.serverGroupName, "serverGroupName")
+    validateNotEmptyString(errors, description.region, "region")
+    validateNotEmptyString(errors, description.accountName, "accountName")
     //TODO: check serviceLimits?
     Integer targetSize = description.targetSize?: (description.capacity?.desired?:0)
-    helper.validateNonNegative(targetSize?:0, "targetSize")
+    validateNonNegative(errors, targetSize?:0, "targetSize")
     if (description.capacity) {
-      helper.validateCapacity(description.capacity.min, description.capacity.max, description.capacity.desired)
+      validateCapacity(errors, description.capacity.min, description.capacity.max, description.capacity.desired)
     }
   }
 }

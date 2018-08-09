@@ -18,21 +18,21 @@ import org.springframework.validation.Errors
 
 @OracleOperation(AtomicOperations.CREATE_SERVER_GROUP)
 @Component("basicOracleDeployDescriptionValidator")
-class BasicOracleDeployDescriptionValidator extends DescriptionValidator<BasicOracleDeployDescription> {
-
+class BasicOracleDeployDescriptionValidator extends StandardOracleAttributeValidator<BasicOracleDeployDescription> {
+  
   @Override
   void validate(List priorDescriptions, BasicOracleDeployDescription description, Errors errors) {
-    def helper = new StandardOracleAttributeValidator("basicOracleDeployDescriptionValidator", errors)
-    helper.validateNotEmptyString(description.application, "application")
-    helper.validateNotEmptyString(description.region, "region")
-    helper.validateNotEmptyString(description.accountName, "accountName")
-    helper.validateNotEmptyString(description.imageId, "imageId")
-    helper.validateNotEmptyString(description.shape, "shape")
+    context = "basicOracleDeployDescriptionValidator"
+    validateNotEmptyString(errors, description.application, "application")
+    validateNotEmptyString(errors, description.region, "region")
+    validateNotEmptyString(errors, description.accountName, "accountName")
+    validateNotEmptyString(errors, description.imageId, "imageId")
+    validateNotEmptyString(errors, description.shape, "shape")
     //TODO: check serviceLimits?
     Integer targetSize = description.targetSize?: (description.capacity?.desired?:0)
-    helper.validateNonNegative(targetSize?:0, "targetSize")
+    validateNonNegative(errors, targetSize?:0, "targetSize")
     if (description.capacity) {
-      helper.validateCapacity(description.capacity.min, description.capacity.max, description.capacity.desired)
+      validateCapacity(errors, description.capacity.min, description.capacity.max, description.capacity.desired)
     }
   }
 }
