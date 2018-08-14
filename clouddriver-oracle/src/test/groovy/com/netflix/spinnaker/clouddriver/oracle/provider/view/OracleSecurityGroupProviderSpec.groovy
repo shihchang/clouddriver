@@ -25,7 +25,7 @@ import spock.lang.Specification
 //@spock.lang.Ignore("pass on local runs, failed only on travisCI.")
 class OracleSecurityGroupProviderSpec extends Specification {
 
-  def "get ... all"() {
+  def "get all"() {
     setup:
     def cache = new InMemoryCache()
     cache.mergeAll(Keys.Namespace.SECURITY_GROUPS.ns, [
